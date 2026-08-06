@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Match - GameZone</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .game-page {
+            text-align: center;
+            padding: 30px 20px;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 15px;
+            color: #00d4ff;
+        }
+        #score-board {
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+        #memory-board {
+            width: 340px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 0 auto;
+        }
+        .memory-card {
+            width: 75px;
+            height: 75px;
+            background-color: #2a2a40;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .memory-card.flipped {
+            background-color: #00d4ff;
+        }
+        .memory-card.matched {
+            background-color: #55efc4;
+            cursor: default;
+        }
+        #restart-btn {
+            margin-top: 20px;
+            background-color: #00d4ff;
+            color: #0f0f1a;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <div class="logo">
+            🎮 <span>GameZone</span>
+        </div>
+        <nav class="nav-links">
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="game-page">
+        <a href="../index.html" class="back-link">← Back to Home</a>
+        <h1>Memory Match</h1>
+        <div id="score-board">Moves: <span id="score">0</span></div>
+        <div id="memory-board"></div>
+        <button id="restart-btn">Restart</button>
+    </div>
+
+    <script src="../js/memory.js"></script>
+</body>
+</html>
