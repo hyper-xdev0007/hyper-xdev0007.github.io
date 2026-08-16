@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Spend Vikram Oswal's Money</title>
+<style>
+  :root{
+    --bg: #f1f2f6;
+    --card-bg: #ffffff;
+    --text: #333333;
+    --muted: #888888;
+    --border: #eceef1;
+    --title-bg: #ffffff;
+  }
+  body.dark{
+    --bg: #14161a;
+    --card-bg: #1e2126;
+    --text: #f0f0f0;
+    --muted: #9aa0a6;
+    --border: #2a2e35;
+    --title-bg: #1e2126;
+  }
+
+  html{ font-size:16px; -webkit-text-size-adjust:100%; box-sizing:border-box;
+        font-family:Roboto,sans-serif,system-ui,-apple-system,"Segoe UI",Ubuntu,Cantarell,"Noto Sans"; }
+  *,*:before,*:after{ box-sizing:border-box; margin:0; }
+  body{ background:var(--bg); color:var(--text); transition: background 0.25s ease, color 0.25s ease; }
+
+  .wrapper{ background:var(--bg); }
+  .container{ margin-left:auto; margin-right:auto; max-width:1000px; }
+
+  .title{ background:var(--title-bg); color:var(--text); font-size:30px; font-weight:700; line-height:1.3em;
+          margin-bottom:10px; padding:26px 20px 30px; text-align:center; transition: background 0.25s ease; }
+  .logo-badge{
+    display:block; width:112px; height:112px; margin:6px auto 22px;
+    border-radius:50%;
+    background: radial-gradient(circle at 32% 28%, #fff6d8, #f4c542 45%, #c8901a 80%, #a97314 100%);
+    box-shadow: 0 8px 20px rgba(169,126,28,0.4), inset 0 -6px 10px rgba(0,0,0,0.18), inset 0 4px 6px rgba(255,255,255,0.75);
+    display:flex; align-items:center; justify-content:center;
+    font-size:56px; line-height:1;
+  }
+
+  /* toolbar */
+  .toolbar{ display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin:0 0 10px; }
+  .tool-btn{
+    background:var(--card-bg); color:var(--text); border:1px solid var(--border);
+    border-radius:100px; padding:9px 16px; font-size:13.5px; font-weight:600;
+    cursor:pointer; display:flex; align-items:center; gap:6px; transition:transform 0.1s ease, background 0.2s ease;
+  }
+  .tool-btn:hover{ transform:translateY(-1px); }
+  .tool-btn:active{ transform:scale(0.96); }
+
+  .money-bar{
+    background:linear-gradient(180deg,#ffd76a,#f2a71b); color:#3b2400;
+    font-family:Roboto,sans-serif; font-size:32px; font-weight:700;
+    margin:10px 0; padding:20px; position:sticky; text-align:center; top:0; z-index:9999;
+    letter-spacing:0.01em;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.4);
+    box-shadow: inset 0 -3px 6px rgba(0,0,0,0.08), inset 0 3px 4px rgba(255,255,255,0.5);
+  }
+
+  /* progress bar */
+  .progress-wrap{ max-width:640px; margin:16px auto 6px; padding:0 15px; }
+  .progress-label{ display:flex; justify-content:space-between; font-size:13px; color:var(--muted); margin-bottom:5px; font-weight:600; }
+  .progress-track{ height:16px; border-radius:9px; background:var(--border); overflow:hidden; }
+  .progress-fill{ height:100%; background:linear-gradient(90deg,#ffd76a,#f2a71b); width:100%; transition:width 0.3s ease; }
+
+  /* congrats banner */
+  .congrats{
+    display:none; max-width:640px; margin:14px auto 0; background:#fff4d6; border:1px solid #f2a71b;
+    color:#7a5200; padding:12px 16px; border-radius:8px; font-weight:700; text-align:center; font-size:15px;
+  }
+  body.dark .congrats{ background:#3a2e10; color:#ffd76a; border-color:#f2a71b; }
+
+  /* search + filters */
+  .search-wrap{ max-width:640px; margin:18px auto 10px; padding:0 15px; }
+  #searchBox{
+    width:100%; padding:11px 14px; border-radius:8px; border:1px solid var(--border);
+    background:var(--card-bg); color:var(--text); font-size:15px;
+  }
+  .cat-filters{ display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin:0 0 20px; padding:0 15px; }
+  .cat-btn{
+    background:var(--card-bg); color:var(--text); border:1px solid var(--border);
+    border-radius:100px; padding:8px 15px; font-size:13.5px; font-weight:600; cursor:pointer;
+  }
+  .cat-btn.active{ background:linear-gradient(180deg,#ffd76a,#f2a71b); color:#3b2400; border-color:#f2a71b; }
+
+  .items{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); grid-gap:10px; }
+  .item-wrapper{ background-color:var(--card-bg); color:var(--text); font-size:18px; max-width:100%; padding:22px 15px 20px; text-align:center; width:100%; transition:background 0.25s ease; }
+
+  @keyframes popScale{ 0%{ transform:scale(1); } 45%{ transform:scale(1.08); } 100%{ transform:scale(1); } }
+  .item-wrapper.pop{ animation: popScale 0.28s ease; }
+
+  .item-emoji{ display:block; font-size:64px; height:100px; line-height:100px; margin:0 auto 10px; user-select:none; }
+
+  .item-name{ font-size:21px; font-weight:700; }
+  .item-cost{ color:#24c486; font-size:19px; margin-top:2px; font-weight:700; }
+
+  .item-controls{ display:grid; font-size:20px; font-weight:700; grid-template-columns:repeat(3,1fr); grid-gap:10px; margin-top:22px; }
+  .item-input{ appearance:none; border:1px solid var(--border); background:var(--card-bg); border-radius:3px; color:var(--text); padding:9px 12px; width:100%; text-align:center; font-size:16px; }
+  button{ border:none; border-radius:3px; color:#fff; cursor:pointer; font-weight:700; padding:10px 12px;
+          touch-action:manipulation; user-select:none; font-size:16px; text-align:center; }
+  .item-buy{ background:linear-gradient(180deg,#ffd76a,#f2a71b); color:#3b2400; }
+  .item-sell{ background:linear-gradient(180deg,#f53b82,#f53b57); }
+  button:disabled{ background:var(--border) !important; border:none; color:var(--muted); cursor:auto; }
+
+  .no-results{ text-align:center; color:var(--muted); padding:30px; grid-column:1/-1; }
+
+  .spree-wrapper{ font-size:18px; margin-top:10px; max-width:100%; padding:15px 15px 30px; background-color:var(--card-bg); color:var(--text); text-align:center; }
+  .spree-headline{ font-size:28px; font-weight:700; padding:15px 15px 25px; background-color:var(--card-bg); color:var(--text); text-align:center; }
+  .spree-items{ display:grid; margin-left:auto; margin-right:auto; max-width:340px; text-align:center;
+                grid-gap:10px 0; font-size:18px; grid-template-columns:190px 45px 90px; align-items:center; }
+  .spree-item-name{ text-align:left; text-overflow:ellipsis; overflow:hidden; white-space:nowrap; }
+  .spree-item-amount{ text-align:left; }
+  .spree-item-cost{ font-weight:700; color:#24c486; text-align:right; }
+  .spree-total{ border-top:1px solid var(--border); display:flex; font-weight:700; justify-content:space-between;
+                margin-left:auto; margin-right:auto; margin-top:10px; max-width:340px; padding-top:10px; }
+  .spree-total-money{ color:#24c486; text-align:right; }
+
+  .footer-wrapper{ font-family:sans-serif; font-size:16px; margin-top:15px; padding:30px 20px 45px; text-align:center; color:var(--muted); }
+
+  @media only screen and (max-width:900px){ .items{ grid-template-columns:repeat(2,1fr); } }
+  @media only screen and (max-width:600px){
+    .items{ grid-template-columns:repeat(1,1fr); }
+    .money-bar{ font-size:26px; }
+    .spree-items{ grid-template-columns:150px 40px 80px; max-width:280px; }
+    .spree-total{ max-width:280px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="container">
+
+    <div class="title">
+      <span class="logo-badge">👑</span>
+      Spend Vikram Oswal's Money
+    </div>
+
+    <div class="toolbar">
+      <button class="tool-btn" id="themeToggle">🌙 Dark Mode</button>
+      <button class="tool-btn" id="musicToggle">🎵 Music On</button>
+      <button class="tool-btn" id="resetBtn">🔄 Reset All Purchases</button>
+      <button class="tool-btn" id="shareBtn">📤 Share My Shopping List</button>
+    </div>
+
+    <div class="money-bar" id="moneyBar">₹0</div>
+
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Money Left</span><span id="progressPct">100%</span></div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+
+    <div class="congrats" id="congrats">🎉 Congratulations! You spent Vikram Oswal's entire fortune!</div>
+
+    <div class="search-wrap">
+      <input id="searchBox" type="text" placeholder="🔍 Search Item">
+    </div>
+    <div class="cat-filters" id="catFilters">
+      <button class="cat-btn active" data-cat="all">All</button>
+      <button class="cat-btn" data-cat="food">🍔 Food</button>
+      <button class="cat-btn" data-cat="vehicles">🚗 Vehicles</button>
+      <button class="cat-btn" data-cat="property">🏠 Property</button>
+      <button class="cat-btn" data-cat="luxury">💎 Luxury</button>
+      <button class="cat-btn" data-cat="personal">🛍️ Personal</button>
+    </div>
+
+    <div class="items" id="items"></div>
+
+    <div class="spree-wrapper" id="spree" style="display:none;">
+      <div class="spree-headline">Your Spending Spree</div>
+      <div class="spree-items" id="spreeItems"></div>
+      <div class="spree-total">
+        <div>Total Spent</div>
+        <div class="spree-total-money" id="spreeTotal">₹0</div>
+      </div>
+    </div>
+
+    <div class="footer-wrapper">
+      Fictional character, just for fun. Made in the style of neal.fun/spend.
+    </div>
+
+  </div>
+</div>
+
+<script>
+const TOTAL = 8000000000000; // ₹8,00,000 crore starting balance
+
+const items = [
+  { name:"Cutting Chai", emoji:"☕", cost:10, cat:"food" },
+  { name:"Samosa", emoji:"🥟", cost:15, cat:"food" },
+  { name:"Vada Pav", emoji:"🍔", cost:20, cat:"food" },
+  { name:"Bus Ticket", emoji:"🚌", cost:25, cat:"vehicles" },
+  { name:"Masala Dosa", emoji:"🥞", cost:120, cat:"food" },
+  { name:"Movie Ticket", emoji:"🎬", cost:250, cat:"personal" },
+  { name:"Cricket Bat", emoji:"🏏", cost:1500, cat:"personal" },
+  { name:"Sneakers", emoji:"👟", cost:3000, cat:"personal" },
+  { name:"Saree", emoji:"🥻", cost:5000, cat:"personal" },
+  { name:"Smartphone", emoji:"📱", cost:18000, cat:"personal" },
+  { name:"Smart TV", emoji:"📺", cost:45000, cat:"personal" },
+  { name:"Gold Coin (10g)", emoji:"🪙", cost:70000, cat:"luxury" },
+  { name:"Second-hand Scooter", emoji:"🛵", cost:80000, cat:"vehicles" },
+  { name:"Auto Rickshaw", emoji:"🛺", cost:250000, cat:"vehicles" },
+  { name:"Royal Enfield", emoji:"🏍️", cost:200000, cat:"vehicles" },
+  { name:"Big Fat Wedding", emoji:"💍", cost:5000000, cat:"luxury" },
+  { name:"Maruti Alto", emoji:"🚗", cost:550000, cat:"vehicles" },
+  { name:"Innova Crysta", emoji:"🚙", cost:2200000, cat:"vehicles" },
+  { name:"Studio Apartment (Tier-2 city)", emoji:"🏠", cost:2500000, cat:"property" },
+  { name:"2BHK, Mumbai Suburb", emoji:"🏢", cost:12000000, cat:"property" },
+  { name:"Range Rover", emoji:"🚘", cost:25000000, cat:"vehicles" },
+  { name:"Farmhouse", emoji:"🌳", cost:50000000, cat:"property" },
+  { name:"IPL Player (top bid)", emoji:"🏏", cost:200000000, cat:"luxury" },
+  { name:"Yacht", emoji:"⛵", cost:300000000, cat:"vehicles" },
+  { name:"Bollywood Movie", emoji:"🎥", cost:1000000000, cat:"luxury" },
+  { name:"Private Jet", emoji:"✈️", cost:1500000000, cat:"vehicles" },
+  { name:"5-Star Hotel", emoji:"🏨", cost:5000000000, cat:"property" },
+  { name:"Cricket Stadium", emoji:"🏟️", cost:8000000000, cat:"property" },
+  { name:"IPL Team", emoji:"🏆", cost:30000000000, cat:"luxury" },
+  { name:"Skyscraper", emoji:"🏙️", cost:40000000000, cat:"property" },
+];
+
+items.forEach((it,i) => { it.id = i; it.qty = 0; });
+
+let currentSearch = "";
+let currentCat = "all";
+let justBoughtId = null;
+
+function fmt(num){
+  return "₹" + Math.round(num).toLocaleString("en-IN");
+}
+function spent(){
+  return items.reduce((s,it) => s + it.qty*it.cost, 0);
+}
+
+/* ---------- audio (Web Audio API, no external files) ---------- */
+let audioCtx;
+function actx(){
+  if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if(audioCtx.state === "suspended") audioCtx.resume();
+  return audioCtx;
+}
+function beep(freq, start, dur, type, vol){
+  const c = actx();
+  const osc = c.createOscillator();
+  const gain = c.createGain();
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, c.currentTime + start);
+  gain.gain.setValueAtTime(0, c.currentTime + start);
+  gain.gain.linearRampToValueAtTime(vol, c.currentTime + start + 0.01);
+  gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + start + dur);
+  osc.connect(gain); gain.connect(c.destination);
+  osc.start(c.currentTime + start);
+  osc.stop(c.currentTime + start + dur + 0.03);
+}
+function playCash(){ beep(880,0,0.09,"square",0.12); beep(1320,0.08,0.12,"square",0.12); }
+function playCoin(){ beep(1568,0,0.08,"triangle",0.15); beep(1046,0.06,0.1,"triangle",0.1); }
+
+let musicOn = false, musicTimer = null;
+const musicBtn = document.getElementById("musicToggle");
+const chordNotes = [261.63, 329.63, 392.0, 523.25, 392.0, 329.63];
+function scheduleMusic(){
+  if(!musicOn) return;
+  const note = chordNotes[Math.floor(Math.random()*chordNotes.length)];
+  beep(note, 0, 1.4, "sine", 0.025);
+  musicTimer = setTimeout(scheduleMusic, 1500);
+}
+musicBtn.addEventListener("click", () => {
+  musicOn = !musicOn;
+  musicBtn.textContent = musicOn ? "🔇 Music Off" : "🎵 Music On";
+  if(musicOn){ actx(); scheduleMusic(); } else { clearTimeout(musicTimer); }
+});
+
+/* ---------- dark mode ---------- */
+const themeToggle = document.getElementById("themeToggle");
+themeToggle.addEventListener("click", () => {
+  document.body.classList.toggle("dark");
+  const dark = document.body.classList.contains("dark");
+  themeToggle.textContent = dark ? "☀️ Light Mode" : "🌙 Dark Mode";
+});
+
+/* ---------- reset ---------- */
+document.getElementById("resetBtn").addEventListener("click", () => {
+  items.forEach(it => it.qty = 0);
+  render();
+});
+
+/* ---------- share ---------- */
+document.getElementById("shareBtn").addEventListener("click", () => {
+  const bought = items.filter(it => it.qty > 0);
+  let text = "My Vikram Oswal Spending Spree 💸\n\n";
+  if(bought.length === 0){
+    text += "Haven't bought anything yet!";
+  } else {
+    bought.forEach(it => { text += `${it.emoji} ${it.name} x${it.qty} — ${fmt(it.qty*it.cost)}\n`; });
+    text += `\nTotal Spent: ${fmt(spent())}`;
+  }
+  if(navigator.share){
+    navigator.share({ title: "My Shopping List", text }).catch(()=>{});
+  } else if(navigator.clipboard){
+    navigator.clipboard.writeText(text).then(() => alert("Shopping list copied to clipboard!"));
+  } else {
+    alert(text);
+  }
+});
+
+/* ---------- search + category filter ---------- */
+document.getElementById("searchBox").addEventListener("input", e => {
+  currentSearch = e.target.value.toLowerCase();
+  renderGrid();
+});
+document.getElementById("catFilters").addEventListener("click", e => {
+  const btn = e.target.closest(".cat-btn");
+  if(!btn) return;
+  currentCat = btn.dataset.cat;
+  document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  renderGrid();
+});
+
+/* ---------- main render ---------- */
+const moneyBar = document.getElementById("moneyBar");
+const itemsEl = document.getElementById("items");
+const spreeEl = document.getElementById("spree");
+const spreeItemsEl = document.getElementById("spreeItems");
+const spreeTotalEl = document.getElementById("spreeTotal");
+const progressFill = document.getElementById("progressFill");
+const progressPct = document.getElementById("progressPct");
+const congratsEl = document.getElementById("congrats");
+
+function renderGrid(){
+  const remaining = TOTAL - spent();
+  const filtered = items.filter(it =>
+    (currentCat === "all" || it.cat === currentCat) &&
+    it.name.toLowerCase().includes(currentSearch)
+  );
+
+  itemsEl.innerHTML = "";
+  if(filtered.length === 0){
+    itemsEl.innerHTML = `<div class="no-results">No items match your search 🔍</div>`;
+    return;
+  }
+
+  filtered.forEach(it => {
+    const canBuy = remaining >= it.cost;
+    const canSell = it.qty > 0;
+    const wrap = document.createElement("div");
+    wrap.className = "item-wrapper" + (it.id === justBoughtId ? " pop" : "");
+    wrap.innerHTML = `
+      <span class="item-emoji">${it.emoji}</span>
+      <div class="item-name">${it.name}</div>
+      <div class="item-cost">${fmt(it.cost)}</div>
+      <div class="item-controls">
+        <button class="item-sell" ${canSell ? "" : "disabled"} data-id="${it.id}" data-action="sell">Sell</button>
+        <input class="item-input" type="number" pattern="\\d*" value="${it.qty}" data-id="${it.id}">
+        <button class="item-buy" ${canBuy ? "" : "disabled"} data-id="${it.id}" data-action="buy">Buy</button>
+      </div>
+    `;
+    itemsEl.appendChild(wrap);
+  });
+  justBoughtId = null;
+}
+
+function render(){
+  const s = spent();
+  const remaining = TOTAL - s;
+  moneyBar.textContent = fmt(remaining);
+
+  const pctLeft = Math.max(0, (remaining / TOTAL) * 100);
+  progressFill.style.width = pctLeft + "%";
+  progressPct.textContent = pctLeft.toFixed(1) + "%";
+
+  congratsEl.style.display = remaining < 10 ? "block" : "none";
+
+  renderGrid();
+
+  const bought = items.filter(it => it.qty > 0);
+  if(bought.length){
+    spreeEl.style.display = "";
+    spreeItemsEl.innerHTML = "";
+    bought.forEach(it => {
+      spreeItemsEl.innerHTML += `
+        <div class="spree-item-name">${it.emoji} ${it.name}</div>
+        <div class="spree-item-amount">x${it.qty}</div>
+        <div class="spree-item-cost">${fmt(it.qty*it.cost)}</div>
+      `;
+    });
+    spreeTotalEl.textContent = fmt(s);
+  } else {
+    spreeEl.style.display = "none";
+  }
+}
+
+itemsEl.addEventListener("click", e => {
+  const btn = e.target.closest("button");
+  if(!btn) return;
+  const it = items[+btn.dataset.id];
+  const remaining = TOTAL - spent();
+  if(btn.dataset.action === "buy" && remaining >= it.cost){
+    it.qty++;
+    justBoughtId = it.id;
+    playCash();
+  } else if(btn.dataset.action === "sell" && it.qty > 0){
+    it.qty--;
+    playCoin();
+  }
+  render();
+});
+
+itemsEl.addEventListener("change", e => {
+  const input = e.target.closest(".item-input");
+  if(!input) return;
+  const it = items[+input.dataset.id];
+  let val = Math.max(0, Math.floor(Number(input.value) || 0));
+  const otherSpent = spent() - it.qty*it.cost;
+  const maxAffordable = Math.floor((TOTAL - otherSpent) / it.cost);
+  it.qty = Math.min(val, maxAffordable);
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
