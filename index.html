@@ -42,42 +42,63 @@
         <a href="#games" class="hero-btn">Start Playing</a>
     </section>
     <section class="categories">
-        <h2>Browse Categories</h2>
-        <div class="category-grid">
-            <div class="category-card">🎯 Action</div>
-            <div class="category-card">🧩 Puzzle</div>
-            <div class="category-card">🏎️ Racing</div>
-            <div class="category-card">⚽ Sports</div>
-            <div class="category-card">🧠 Strategy</div>
-            <div class="category-card">👾 Arcade</div>
-        </div>
-    </section>
+    <h2>Browse Categories</h2>
+    <div class="category-grid">
+        <div class="category-card active" data-filter="all">🎮 All Games</div>
+        <div class="category-card" data-filter="action">🎯 Action</div>
+        <div class="category-card" data-filter="puzzle">🧩 Puzzle</div>
+        <div class="category-card" data-filter="racing">🏎️ Racing</div>
+        <div class="category-card" data-filter="sports">⚽ Sports</div>
+        <div class="category-card" data-filter="strategy">🧠 Strategy</div>
+        <div class="category-card" data-filter="arcade">👾 Arcade</div>
+    </div>
+</section>
     <section class="games" id="games">
         <h2>Popular Games</h2>
         <div class="games-grid">
-            <a href="games/game1.html" class="game-card">
-                <div class="game-thumbnail">🎮</div>
-                <h3>2048</h3>
-                <p>Puzzle</p>
-            </a>
-            <a href="games/game2.html" class="game-card">
-                <div class="game-thumbnail">🐍</div>
-                <h3>Snake</h3>
-                <p>Arcade</p>
-            <a href="games/game4.html" class="game-card">
-                <div class="game-thumbnail">🚀</div>
-                <h3>Space Shooter</h3>
-                <p>Action</p>
-            </a>
-            <a href="games/game3.html" class="game-card">
-                <div class="game-thumbnail">🀄</div>
-                <h3>Memory Match</h3>
-                <p>Puzzle</p>
-            </a>
-            <a href="games/game5.html" class="game-card">
-    <div class="game-thumbnail">💰</div>
-    <h3>Spend India's Richest Man's Money</h3>
-    <p>Fun</p>
+          <a href="games/game1.html" class="game-card" data-category="puzzle">
+    <div class="game-thumbnail">
+        <img src="assets/images/2048.png" alt="2048">
+        <div class="game-info">
+            <h3>2048</h3>
+        </div>
+    </div>
+</a>
+
+<a href="games/game2.html" class="game-card" data-category="arcade">
+    <div class="game-thumbnail">
+        <img src="assets/images/snake.png" alt="Snake">
+        <div class="game-info">
+            <h3>Snake</h3>
+        </div>
+    </div>
+</a>
+
+<a href="games/game4.html" class="game-card" data-category="action">
+    <div class="game-thumbnail">
+        <img src="assets/images/space shooter.png" alt="Space Shooter">
+        <div class="game-info">
+            <h3>Space Shooter</h3>
+        </div>
+    </div>
+</a>
+
+<a href="games/game3.html" class="game-card" data-category="puzzle">
+    <div class="game-thumbnail">
+        <img src="assets/images/memory card.png" alt="Memory Match">
+        <div class="game-info">
+            <h3>Memory Match</h3>
+        </div>
+    </div>
+</a>
+
+<a href="games/game5.html" class="game-card" data-category="fun">
+    <div class="game-thumbnail">
+        <img src="assets/images/spend money.png" alt="Spend India's Richest Man's Money">
+        <div class="game-info">
+            <h3>Spend India's Richest Man's Money</h3>
+        </div>
+    </div>
 </a>
             
         </div>
@@ -95,6 +116,6 @@
 </body>
     
     <script src="js/script.js"></script>
-
+    <script src="js/filter.js"></script>
 </body>
 </html>                      
